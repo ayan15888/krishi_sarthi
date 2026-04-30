@@ -5,7 +5,7 @@ import '../providers/locale_provider.dart';
 import 'language_selection_screen.dart';
 import 'onboarding_screen.dart';
 import 'auth/login_screen.dart';
-import 'home/home_screen.dart';
+import 'main_screen.dart';
 import 'package:animations/animations.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else if (!authProvider.isAuthenticated) {
       nextScreen = const LoginScreen();
     } else {
-      nextScreen = const HomeScreen();
+      nextScreen = const MainScreen();
     }
 
     Navigator.pushReplacement(

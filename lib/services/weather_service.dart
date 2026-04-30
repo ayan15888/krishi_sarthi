@@ -1,15 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class WeatherService {
-  final String apiKey = 'd8c48eb00c654d774c6d1cfac5e98de2'; // User should replace this
+  final String? apiKey = dotenv.env['OPENWEATHER_API_KEY'];
   final String baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
 
   Future<Map<String, dynamic>> fetchWeather(double lat, double lon) async {
-    // For demonstration, if apiKey is 'YOUR_API_KEY', return mock data
-    if (apiKey == 'YOUR_API_KEY') {
+    if (apiKey == null || apiKey!.isEmpty) {
+      // Mock data if no API key is provided
       return {
-        'main': {'temp': 301.15, 'humidity': 70},
+        'main': {'temp': 28.5, 'humidity': 70},
         'weather': [{'description': 'clear sky', 'main': 'Clear', 'icon': '01d'}],
         'wind': {'speed': 3.5},
         'name': 'Guwahati'

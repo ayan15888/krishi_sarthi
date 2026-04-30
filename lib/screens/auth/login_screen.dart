@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/locale_provider.dart';
-import '../home/home_screen.dart';
+import '../main_screen.dart';
 import 'signup_screen.dart';
 import 'package:animations/animations.dart';
 
@@ -96,14 +96,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   try {
                     await authProvider.signIn(
-                      _emailController.text,
-                      _passwordController.text,
+                      _emailController.text.trim(),
+                      _passwordController.text.trim(),
                     );
                     if (context.mounted) {
                       Navigator.pushReplacement(
                         context,
                         PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) => const HomeScreen(),
+                          pageBuilder: (context, animation, secondaryAnimation) => const MainScreen(),
                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
                             return SharedAxisTransition(
                               animation: animation,

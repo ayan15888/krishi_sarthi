@@ -83,7 +83,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final data = provider.weatherData;
     if (data == null) return const SizedBox();
 
-    final temp = (data['main']['temp'] - 273.15).toStringAsFixed(1);
+    // The API returns Celsius directly because units=metric is used.
+    final temp = (data['main']['temp'] as num).toDouble().toStringAsFixed(1);
+
     final humidity = data['main']['humidity'];
     final description = data['weather'][0]['description'];
 
@@ -121,18 +123,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      description.toUpperCase(),
-                      style: const TextStyle(color: Colors.white70, fontSize: 16),
-                    ),
-                    Text(
-                      '${l10n.humidity}: $humidity%',
-                      style: const TextStyle(color: Colors.white70, fontSize: 16),
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        description.toUpperCase(),
+                        style: const TextStyle(color: Colors.white70, fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${l10n.humidity}: $humidity%',
+                        style: const TextStyle(color: Colors.white70, fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

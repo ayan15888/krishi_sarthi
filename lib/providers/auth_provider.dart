@@ -7,9 +7,10 @@ class AuthProvider with ChangeNotifier {
   User? _user;
   bool _isLoading = false;
   bool _hasSeenOnboarding = false;
+  bool _isDevBypass = false;
 
   User? get user => _user;
-  bool get isAuthenticated => _user != null;
+  bool get isAuthenticated => _user != null || _isDevBypass;
   bool get isLoading => _isLoading;
   bool get hasSeenOnboarding => _hasSeenOnboarding;
 
@@ -40,7 +41,6 @@ class AuthProvider with ChangeNotifier {
       );
       
       if (response.user != null) {
-        // Create profile in the public.profiles table
         await _supabase.from('profiles').insert({
           'id': response.user!.id,
           'full_name': fullName,
@@ -58,12 +58,30 @@ class AuthProvider with ChangeNotifier {
   Future<void> signIn(String email, String password) async {
     _isLoading = true;
     notifyListeners();
+    
+    final cleanEmail = email.trim().toLowerCase();
+    final cleanPassword = password.trim();
+
+    // DEBUG PRINTS
+    debugPrint('Attempting login with: [$cleanEmail] / [$cleanPassword]');
+
     try {
+      // Developer Bypass
+      if (cleanEmail == 'test@app.com' && cleanPassword == 'password') {
+        debugPrint('Developer Bypass Triggered!');
+        _isDevBypass = true;
+        await Future.delayed(const Duration(seconds: 1));
+        notifyListeners();
+        return;
+      }
+
       await _supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
+        email: cleanEmail,
+        password: cleanPassword,
       );
+      _isDevBypass = false;
     } catch (e) {
+      debugPrint('Supabase Auth Error: $e');
       rethrow;
     } finally {
       _isLoading = false;
@@ -73,6 +91,7 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> signOut() async {
     await _supabase.auth.signOut();
+    _isDevBypass = false;
     notifyListeners();
   }
 
